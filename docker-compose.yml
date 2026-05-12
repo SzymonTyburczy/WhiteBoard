@@ -1,0 +1,29 @@
+version: "3.8"
+
+services:
+  mongo:
+    image: mongo:latest
+    container_name: whiteboard_mongo
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    environment:
+      MONGO_INITDB_DATABASE: whiteboard_app
+
+  server:
+    build: .
+    container_name: whiteboard_server
+    ports:
+      - "3000:3000"
+    depends_on:
+      - mongo
+    environment:
+      MONGO_URI: mongodb://mongo:27017/whiteboard_app
+      PORT: 3000
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+volumes:
+  mongo_data:
